@@ -37,6 +37,10 @@ DASHBOARD_GROUPS = {
     "🎧 Service client": ["Service client"],
 }
 
+RISK_BADGE = {"FAIBLE": "🟢", "MOYEN": "🟠", "ELEVE": "🔴"}
+RISK_LABEL = {"FAIBLE": "Risque faible", "MOYEN": "Risque moyen", "ELEVE": "Risque eleve"}
+RISK_ORDER = {"FAIBLE": 0, "MOYEN": 1, "ELEVE": 2}
+
 
 def _read_uploaded_csv(uploaded_file) -> pd.DataFrame | None:
     for encoding in ("utf-8-sig", "latin-1"):
@@ -169,7 +173,30 @@ if report:
     st.divider()
 
 # ----------------------------------------------------- tableau de bord ----
-st.subheader("Etat des services")
+st.subheader("📊 Tableau de bord")
+
+blocking_steps = [s for s in STEPS if s.criticality == "Bloquante"]
+high_risk_steps = [s for s in STEPS if s.risk_level == "ELEVE"]
+medium_risk_steps = [s for s in STEPS if s.risk_level == "MOYEN"]
+low_risk_steps = [s for s in STEPS if s.risk_level == "FAIBLE"]
+critical_findings = [a for a in ANOMALIES if a.severity == "CRITIQUE"]
+
+kpi_cols = st.columns(5)
+kpi_cols[0].metric("Etapes du plan", len(STEPS))
+kpi_cols[1].metric("Etapes bloquantes", len(blocking_steps))
+kpi_cols[2].metric("Decisions a risque eleve", len(high_risk_steps))
+kpi_cols[3].metric("Anomalies critiques", len(critical_findings))
+kpi_cols[4].metric("Perte financiere", eur(RISK.estimated_loss_eur) if RISK.data_sufficient else "n/a")
+
+st.caption(
+    f"Repartition du risque par decision : 🟢 {len(low_risk_steps)} faible · "
+    f"🟠 {len(medium_risk_steps)} moyen · 🔴 {len(high_risk_steps)} eleve"
+)
+
+st.markdown("**Etat des services** — cliquez sur *Detail* pour voir les systemes concernes et leur risque.")
+if "selected_category" not in st.session_state:
+    st.session_state["selected_category"] = None
+
 cards = st.columns(len(DASHBOARD_GROUPS))
 for col, (label, categories) in zip(cards, DASHBOARD_GROUPS.items()):
     nodes_in_group = [s for s in STEPS if s.category in categories]
@@ -177,7 +204,29 @@ for col, (label, categories) in zip(cards, DASHBOARD_GROUPS.items()):
     with col:
         st.markdown(f"### {color}")
         st.markdown(f"**{label}**")
-        st.caption(f"{len(nodes_in_group)} element(s) concerne(s)")
+        st.caption(f"{len(nodes_in_group)} element(s)")
+        if st.button("🔍 Detail", key=f"cat_btn_{label}", use_container_width=True):
+            st.session_state["selected_category"] = (
+                None if st.session_state["selected_category"] == label else label
+            )
+
+selected_category = st.session_state.get("selected_category")
+if selected_category:
+    categories = DASHBOARD_GROUPS[selected_category]
+    nodes_in_group = sorted(
+        (s for s in STEPS if s.category in categories),
+        key=lambda s: -RISK_ORDER.get(s.risk_level, 0),
+    )
+    with st.container(border=True):
+        st.markdown(f"#### 🔎 Detail — {selected_category}")
+        if not nodes_in_group:
+            st.caption("Aucun element dans cette categorie pour ce processus.")
+        for s in nodes_in_group:
+            st.markdown(
+                f"{RISK_BADGE.get(s.risk_level, '⚪')} **{human_name(s.node)}** "
+                f"({RISK_LABEL.get(s.risk_level, 'Risque non evalue')})"
+            )
+            st.caption(s.risk_consequence)
 
 st.divider()
 
@@ -216,6 +265,7 @@ st.divider()
 st.subheader("📋 Plan de redemarrage, dans l'ordre")
 for s in STEPS:
     st.markdown(f"**Etape {s.step}.** {explain_step(s)}")
+    st.caption(f"{RISK_BADGE.get(s.risk_level, '⚪')} **{RISK_LABEL.get(s.risk_level, '?')} si on redemarre maintenant** — {s.risk_consequence}")
     with st.expander("Details techniques"):
         st.write(f"Systeme : `{s.node}` — categorie technique : {s.category} — criticite : {s.criticality}")
         st.write("Raisons de la confiance affichee :")
@@ -266,7 +316,10 @@ def build_export_markdown() -> str:
         lines.append(f"- {a.title_human} : {a.action_pro}")
     lines += ["", "## Plan de redemarrage, dans l'ordre"]
     for s in STEPS:
-        lines.append(f"{s.step}. {human_name(s.node)} — confiance : {s.confidence}")
+        lines.append(
+            f"{s.step}. {human_name(s.node)} — confiance : {s.confidence} — "
+            f"{RISK_LABEL.get(s.risk_level, '?')} : {s.risk_consequence}"
+        )
     lines += ["", "## Incoherences detectees"]
     for a in ANOMALIES:
         lines.append(f"- [{a.severity}] {a.title_human} (sources : {', '.join(a.sources)})")

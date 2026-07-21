@@ -28,6 +28,7 @@ class Anomaly:
     detail_human: str
     sources: list[str] = field(default_factory=list)
     action_pro: str | None = None  # a faire valider par un professionnel avant d'agir
+    asset: str | None = None  # noeud du graphe concerne, pour rattacher ce constat a une etape du plan
 
 
 def _bia_row(bia: pd.DataFrame, process_id: str) -> pd.Series | None:
@@ -106,6 +107,7 @@ def run_anomaly_checks(process_id: str, graph_nodes: set[str]) -> list[Anomaly]:
             sources=["PRA_Gestion_Commandes_v1_2024_OBSOLETE.docx", "Impact_Assessment.csv"],
             action_pro="Faire confirmer par un expert cyber la strategie de reconstruction de l'annuaire "
                        "(foret propre vs restauration) avant toute action.",
+            asset="AD01",
         ))
 
     # 3) SECRETS-VAULT: blocage total du redeploiement
@@ -133,6 +135,7 @@ def run_anomaly_checks(process_id: str, graph_nodes: set[str]) -> list[Anomaly]:
             sources=["Vulnerabilities_Extract.csv", "Backup_Catalog.csv", "Cyber_Vault_Catalog.csv"],
             action_pro="Faire diagnostiquer en urgence par votre prestataire pourquoi les sauvegardes du "
                        "coffre-fort echouent avant de tenter le moindre redemarrage d'application.",
+            asset="SECRETS-VAULT",
         ))
 
     # 4) RPO gap ORDERDB -> perte financiere
@@ -166,6 +169,7 @@ def run_anomaly_checks(process_id: str, graph_nodes: set[str]) -> list[Anomaly]:
             sources=["BIA_Export.csv", "Backup_Catalog.csv"],
             action_pro="Faire valider par la DAF le montant de perte acceptable et informer les clients "
                        "impactes des commandes potentiellement a resaisir.",
+            asset="ORDERDB",
         ))
 
     # 5) DNS stale (double source: DNS_Export vs Ticket_Extract)
@@ -190,6 +194,7 @@ def run_anomaly_checks(process_id: str, graph_nodes: set[str]) -> list[Anomaly]:
             ),
             sources=["DNS_Export.csv", "Ticket_Extract.csv"],
             action_pro="Faire corriger l'adresse par l'equipe reseau avant de rouvrir l'acces public au site.",
+            asset="DNS01",
         ))
 
     # 6) AD01: sauvegarde possiblement contaminee + vulnerabilite MFA (origine du mouvement lateral)
@@ -216,6 +221,7 @@ def run_anomaly_checks(process_id: str, graph_nodes: set[str]) -> list[Anomaly]:
             sources=["Backup_Catalog.csv", "Vulnerabilities_Extract.csv", "Monitoring_Alerts.csv"],
             action_pro="Ne pas restaurer l'annuaire sans qu'un expert cyber ait verifie l'absence de "
                        "porte derobee (analyse forensique minimale requise).",
+            asset="AD01",
         ))
 
     # 7) Dependance non documentee dans la CMDB (IAM-SSO)
@@ -240,6 +246,7 @@ def run_anomaly_checks(process_id: str, graph_nodes: set[str]) -> list[Anomaly]:
                 "risque de ne meme pas savoir qu'il existe ni qui le gere."
             ),
             sources=["Application_Dependencies.csv", "CMDB_Export.csv"],
+            asset=target,
         ))
 
     # 8) RTO incompatible entre CMDB (SAP-ERP) et BIA (P01)
@@ -261,6 +268,7 @@ def run_anomaly_checks(process_id: str, graph_nodes: set[str]) -> list[Anomaly]:
                 "direction a promis aux clients. Il faut trancher avant la crise, pas pendant."
             ),
             sources=["CMDB_Export.csv", "BIA_Export.csv"],
+            asset="SAP-ERP",
         ))
 
     # 9) VM avec protection de sauvegarde incertaine (VM-ERP02)
@@ -281,6 +289,7 @@ def run_anomaly_checks(process_id: str, graph_nodes: set[str]) -> list[Anomaly]:
                 "sauvegarde confirme. S'il est perdu, il faudra peut-etre tout reconstruire a la main."
             ),
             sources=["VMware_Inventory.csv", "CMDB_Export.csv"],
+            asset="SAP-ERP",
         ))
 
     # 10) API-GW: hotfix manuel non versionne + config absente du vault
@@ -304,6 +313,7 @@ def run_anomaly_checks(process_id: str, graph_nodes: set[str]) -> list[Anomaly]:
                 "disparaitra sans prevenir personne."
             ),
             sources=["Ticket_Extract.csv", "Cyber_Vault_Catalog.csv"],
+            asset="API-GW",
         ))
 
     out.sort(key=lambda a: SEVERITY_ORDER.get(a.severity, 9))

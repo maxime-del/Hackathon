@@ -20,6 +20,7 @@ class Finding(BaseModel):
     detail_human: str
     sources: list[str] = Field(default_factory=list)
     action_pro: str | None = None
+    asset: str | None = None  # noeud du graphe concerne, pour rattacher ce constat a une etape du plan
 
 
 class RebuildStep(BaseModel):
@@ -34,6 +35,12 @@ class RebuildStep(BaseModel):
     confidence_sources: list[str] = Field(default_factory=list)
     prerequisites: list[str] = Field(default_factory=list)
     dependents: list[str] = Field(default_factory=list)
+    # Facteur de risque de la decision "redemarrer maintenant", calcule par le
+    # decideur a partir de la confiance du noeud + des anomalies liees + de
+    # l'impact financier - jamais devine par le LLM.
+    risk_level: str = "FAIBLE"  # FAIBLE | MOYEN | ELEVE
+    risk_consequence: str = ""
+    linked_findings: list[str] = Field(default_factory=list)
 
 
 class RiskItem(BaseModel):

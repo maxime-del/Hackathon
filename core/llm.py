@@ -30,8 +30,17 @@ def get_llm():
         return None
     try:
         from langchain_openai import ChatOpenAI
-        _client = ChatOpenAI(model=MODEL_NAME, api_key=api_key, base_url=BASE_URL,
-                              temperature=0.2, timeout=20)
+        _client = ChatOpenAI(
+            model=MODEL_NAME, api_key=api_key, base_url=BASE_URL,
+            temperature=0.2, timeout=30, max_tokens=600,
+            # Qwen3 est un modele "raisonneur": sans ce flag, il peut passer
+            # plusieurs dizaines de secondes (et tout son budget de tokens) a
+            # "reflechir" avant d'ecrire la reponse - parfois sans jamais
+            # rediger de contenu si max_tokens est atteint pendant la
+            # reflexion. On coupe ce raisonnement etendu: la demo a besoin
+            # de reponses courtes et rapides, pas d'un raisonnement visible.
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+        )
         _available = True
     except Exception:
         _client = None

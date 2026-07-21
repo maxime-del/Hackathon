@@ -8,15 +8,17 @@ from pathlib import Path
 
 from core.llm import call_llm
 from core.state import EngineState
+from tools.decision_risk import compute_step_risks
 
 PROMPT = (Path(__file__).resolve().parents[1] / "prompts" / "decider.md").read_text()
 
 
 def run(state: EngineState) -> EngineState:
-    # Arbitrage: le plan final reste celui du graph_agent (deja fiable et
-    # reproductible) ; le decideur se contente d'extraire les points qui
-    # exigent une validation humaine avant d'agir.
-    state.final_plan = state.restore_steps
+    # Arbitrage: l'ORDRE du plan reste celui du graph_agent (deja fiable et
+    # reproductible) ; le decideur y ajoute le facteur de risque par etape
+    # (confiance + anomalies liees + impact financier) et extrait les
+    # points qui exigent une validation humaine avant d'agir.
+    state.final_plan = compute_step_risks(state.restore_steps, state.findings, state.risk_items)
     state.manual_validations = [f for f in state.findings if f.action_pro]
 
     context = (

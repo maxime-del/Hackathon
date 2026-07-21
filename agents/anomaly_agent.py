@@ -27,7 +27,7 @@ def _to_finding(a) -> Finding:
     return Finding(
         id=a.id, severity=a.severity, title_tech=a.title_tech, title_human=a.title_human,
         detail_tech=a.detail_tech, detail_human=a.detail_human, sources=a.sources,
-        action_pro=a.action_pro,
+        action_pro=a.action_pro, asset=a.asset,
     )
 
 
