@@ -1,0 +1,7 @@
+﻿Time,Source,Severity,Asset,Message,Related_CI
+2026-06-08 08:03,EDR,High,VM-AD01,Suspicious lsass access detected,AD01
+2026-06-08 08:07,SIEM,Critical,VM-ERP01,Mass file rename pattern,SAP-ERP
+2026-06-08 08:12,Backup,High,BACKUP-ORCH,Backup catalog API authentication failed,BACKUP-ORCH
+2026-06-08 08:15,SOC,Critical,Multiple,Ransomware declared SEV1,Multiple
+2026-06-08 08:21,Network,High,DNS01,DNS service unavailable,DNS01
+2026-06-08 08:27,Cloud,Medium,API-GW,5xx rate > 80%,API-GW

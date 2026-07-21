@@ -1,0 +1,7 @@
+﻿Record,Type,Value,TTL,Zone,Last_Changed,Notes
+ecom.novaretail.eu,CNAME,ecom-public.azurefd.net,300,Public,2026-05-30,
+api.novaretail.eu,A,52.174.10.15,300,Public,2026-04-10,Stale? Architecture indique 52.174.10.18 depuis migration API-GW
+sap-prd.novaretail.local,A,10.10.20.11,3600,Internal AD-integrated,2025-12-01,
+erpdb-prd.novaretail.local,A,10.10.30.21,3600,Internal AD-integrated,2025-12-01,
+mq-prd.novaretail.local,A,10.10.40.31,3600,Internal AD-integrated,2026-01-12,
+vault.novaretail.cloud,CNAME,secrets-prod.azure.net,300,Public,2026-02-10,

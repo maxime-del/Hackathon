@@ -1,0 +1,22 @@
+﻿Source,Target,Dependency_Type,Criticality,Direction,Auth_Method,Network_Flow_ID,Data_Sensitivity,Confidence,Source_Document,Notes
+P01 Gestion commandes,ECOM-WEB,Business uses application,Blocker,P01 -> ECOM,N/A,N/A,Customer,High,BIA,Declare dans BIA
+ECOM-WEB,DNS01,Name resolution,Blocker,ECOM -> DNS,N/A,NF001,None,High,Fiche ECOM,DNS absent du PRA ECOM
+ECOM-WEB,PKI01,TLS certificate validation,Blocker,ECOM -> PKI,mTLS,NF002,None,Medium,Architecture,Certificats API
+ECOM-WEB,API-GW,API call,Blocker,ECOM -> API,OAuth2,NF003,Customer,High,Architecture,Front to API
+ECOM-WEB,REDIS-CART,Session/cart cache,Degraded,ECOM -> Redis,Key,NF004,Customer,Medium,Fiche ECOM,CMDB indique Retired?
+API-GW,IAM-SSO,Token validation,Blocker,API -> IAM,OIDC,NF005,Identity,High,API Catalog,IAM-SSO absent CMDB volontairement
+API-GW,ORDER-MGT,API call,Blocker,API -> Order,mTLS + OAuth2,NF006,Customer/Order,High,Architecture,Absent du BIA
+ORDER-MGT,ORDERDB,Database,Blocker,Order -> DB,svc_order_api,NF007,Customer/Order,High,Fiche ORDER-MGT,Absent du BIA
+ORDER-MGT,SAP-ERP,Stock/pricing/reservation API,Blocker,Order -> SAP,service account,NF008,Order/Financial,High,Architecture,BIA simplifie en API-GW -> SAP
+ORDER-MGT,PAY-ADAPTER,Payment authorization,Blocker,Order -> Payment,mTLS,NF009,PCI tokens,High,Network Flow,Absent BIA
+ORDER-MGT,MQ-BROKER,Async events,Important,Order -> MQ,svc_order_mq,NF010,Order,Medium,Runbook Integration,Peut etre contourne en mode degrade 4h
+ORDER-MGT,SECRETS-VAULT,Secrets retrieval,Blocker,Order -> Vault,Managed identity,NF011,Secrets,High,K8S runbook,Absent BIA/PRA
+SAP-ERP,ERPDB,Database,Blocker,SAP -> ERPDB,Oracle wallet,NF012,Financial/Order,High,BIA + SAP runbook,Declare
+SAP-ERP,AD01,Authentication/Kerberos,Blocker,SAP -> AD,Kerberos/LDAP,NF013,Identity,High,SAP runbook,PRA SAP suppose AD sain
+SAP-ERP,DNS01,Name resolution,Blocker,SAP -> DNS,N/A,NF014,None,High,SAP runbook,Absent PRA v1
+SAP-ERP,MQ-BROKER,Interface orders,Important,SAP -> MQ,cert,NF015,Order,Medium,Architecture,Asynchrone
+ERPDB,VCENTER01,Hosted on VM,Blocker,ERPDB -> VMware,N/A,N/A,N/A,High,VMware Inventory,Pour reconstruction VM
+SAP-ERP,VCENTER01,Hosted on VM,Blocker,SAP -> VMware,N/A,N/A,N/A,High,VMware Inventory,Pour reconstruction VM
+K8S-PRD,AD01,Admin access / RBAC,Blocker,K8S -> AD,OIDC/LDAP,NF016,Identity,Medium,K8S runbook,Dependance pour admin/redeploy
+K8S-PRD,DNS01,Name resolution,Blocker,K8S -> DNS,N/A,NF017,None,High,K8S runbook,Cluster rebuild
+PAY-ADAPTER,VPN-PAYMENT,External PSP connectivity,Blocker,PAY -> PSP,mTLS VPN,NF018,PCI tokens,High,Network Flow,Absent BIA

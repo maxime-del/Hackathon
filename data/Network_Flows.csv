@@ -1,0 +1,20 @@
+﻿Flow_ID,Source,Destination,Protocol,Zone,Required_For,Status,Observed_Last_30d
+NF001,ECOM-WEB,DNS01,UDP/TCP 53,Azure -> DC1,Name resolution,Allowed,Yes
+NF002,ECOM-WEB,PKI01,HTTP 80 / LDAP 389 CRL,Azure -> DC1,Certificate validation,Allowed,Yes
+NF003,ECOM-WEB,API-GW,HTTPS 443,Internet/Azure,Customer API,Allowed,Yes
+NF004,ECOM-WEB,REDIS-CART,TCP 6380,Azure,Cart/session,Allowed,Yes
+NF005,API-GW,IAM-SSO,HTTPS 443,Azure -> SaaS,OAuth/OIDC,Allowed,Yes
+NF006,API-GW,ORDER-MGT,HTTPS 8443,Azure,Order orchestration,Allowed,Yes
+NF007,ORDER-MGT,ORDERDB,TCP 5432,Azure,Orders DB,Allowed,Yes
+NF008,ORDER-MGT,SAP-ERP,HTTPS 443 / RFC 3300,Azure -> DC1,Stock/pricing/reservation,Allowed,Yes
+NF009,ORDER-MGT,PAY-ADAPTER,HTTPS 443,Azure,Payment authorization,Allowed,Yes
+NF010,ORDER-MGT,MQ-BROKER,TCP 5671,Azure -> DC1,Async events,Allowed,Yes
+NF011,ORDER-MGT,SECRETS-VAULT,HTTPS 443,Azure,Secrets,Allowed,Yes
+NF012,SAP-ERP,ERPDB,TCP 1521,DC1,ERP data,Allowed,Yes
+NF013,SAP-ERP,AD01,"TCP/UDP 88,389,636",DC1,Auth,Allowed,Yes
+NF014,SAP-ERP,DNS01,UDP/TCP 53,DC1,Name resolution,Allowed,Yes
+NF015,SAP-ERP,MQ-BROKER,TCP 5671,DC1,Interfaces,Allowed,Yes
+NF016,K8S-PRD,AD01,TCP 389/636,Azure -> DC1,Admin auth,Allowed,No
+NF017,K8S-PRD,DNS01,UDP/TCP 53,Azure -> DC1,Cluster operations,Allowed,Yes
+NF018,PAY-ADAPTER,VPN-PAYMENT,IPSec + HTTPS 443,Azure -> PSP,Payment provider,Allowed,Yes
+NF019,ECOM-WEB,SMTP01,TCP 25,Azure -> DC1,Order confirmation emails,Blocked since 2026-05-10,No

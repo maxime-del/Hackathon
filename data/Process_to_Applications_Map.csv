@@ -1,0 +1,16 @@
+﻿Process_ID,Application,Role,Dependency_Level,Source
+P01,ECOM-WEB,Front client,Bloquante,BIA
+P01,API-GW,Point entree API,Bloquante,BIA
+P01,SAP-ERP,"Prix, stock, reservation commande",Bloquante,BIA
+P01,ERPDB,Donnees ERP,Bloquante,BIA
+P01,ORDER-MGT,Orchestration commande,Bloquante,Architecture applicative - absent BIA
+P01,ORDERDB,Donnees commandes,Bloquante,Fiche applicative ORDER-MGT - absent BIA
+P01,PAY-ADAPTER,Autorisation paiement,Bloquante si paiement CB,Flux reseau - absent BIA
+P01,REDIS-CART,Panier client,Degrade mais important,Fiche ECOM-WEB - statut CMDB ambigu
+P01,SECRETS-VAULT,Secrets applicatifs,Bloquante,Runbook Kubernetes - absent BIA
+P02,POS-STORE,Caisses magasins,Bloquante,BIA
+P02,PAY-ADAPTER,Paiement,Bloquante,BIA
+P03,WMS,Preparation entrepot,Bloquante,BIA
+P03,TMS,Transport,Importante,BIA
+P04,CRM-SFDC,Tickets client,Bloquante pour support,BIA
+P05,BI-REPORT,Reporting,Bloquante,BIA

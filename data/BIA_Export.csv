@@ -1,0 +1,7 @@
+﻿Process_ID,Process_Name,Business_Owner,Criticality,RTO,RPO,Max_Data_Loss_EUR_Hour,Customer_Impact,Applications_Declared,BIA_Status
+P01,Gestion des commandes e-commerce,Directrice Digital Commerce,Critique,4h,15m,180000,"Commandes impossibles, pertes de CA, impact image",ECOM-WEB; API-GW; SAP-ERP; ERPDB; AD01,"Valide 2026, mais dependances incompletes"
+P02,Encaissement magasins,Directeur Operations Retail,Haute,6h,30m,90000,Passage caisse degrade ou impossible en magasin,POS-STORE; SAP-ERP; PAY-ADAPTER; AD01,Valide 2026
+P03,Preparation commandes entrepot,Directrice Supply Chain,Haute,8h,1h,65000,"Retards expeditions, commandes bloquees",WMS; TMS; SAP-ERP; MQ-BROKER,Valide 2026
+P04,Service client et retours,Directeur Experience Client,Moyenne,24h,4h,12000,Retards traitement reclamations et retours,CRM-SFDC; ECOM-WEB; MDM-CUSTOMER,Valide 2026
+P05,Reporting finance mensuel,DAF,Moyenne,72h,24h,5000,"Faible impact client direct, risque reporting et controle interne",BI-REPORT; SAP-ERP; DWH,"BIA 2025, a revoir"
+P06,Publication catalogue produits,Directeur Offre,Moyenne,24h,4h,18000,"Catalogue non mis a jour, prix/promos obsoletes",PIM; ECOM-WEB; CDN-PUBLIC,Valide 2026

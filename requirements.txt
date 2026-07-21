@@ -1,0 +1,11 @@
+pandas
+networkx
+python-dotenv
+streamlit
+pyvis
+langchain-openai
+langchain-core
+langgraph
+python-docx
+scikit-learn
+pydantic

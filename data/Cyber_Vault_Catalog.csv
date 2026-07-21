@@ -1,0 +1,8 @@
+﻿Asset,Location,Status,Last_Verified,Manual_Access_Required,Notes,Vault_Copy_Timestamp,Integrity_Check,Restore_Priority
+CYBER-VAULT,DC2 isolated,Available,2026-06-08 08:30,Yes,Connexion uniquement via bastion clean room,,,
+VCENTER01,,,,,Permet reconstruction VMware,2026-06-08 00:30,Passed,1
+ERPDB,,,,,Compatible RPO si wallet disponible,2026-06-08 07:45,Passed,2
+SAP-ERP,,,,,VM app servers,2026-06-08 00:15,Passed,3
+ORDERDB,,,,,RPO P01 non respecte en vault,2026-06-08 01:00,Not tested,2
+API-GW,,,,,Config absente du vault,Missing,N/A,3
+SECRETS-VAULT,,,,,Risque critique,Missing,N/A,1

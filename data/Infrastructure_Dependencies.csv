@@ -1,0 +1,12 @@
+﻿Asset,Depends_On,Reason,Criticality,Notes
+AD01,NTP01,Kerberos time sync,Blocker,NTP trop souvent oublie
+AD02,NTP01,Kerberos time sync,Blocker,NTP trop souvent oublie
+DNS01,AD01,AD-integrated zones,Blocker,Si DNS AD-integre
+PKI01,AD01,Domain joined issuing CA,Important,CA peut etre restauree en mode isole si CRL disponible
+VCENTER01,DNS01,FQDN/lookup,Blocker,vCenter backup restaure par FQDN
+VCENTER01,AD01,Admin auth,Important,Compte local break-glass possible
+K8S-PRD,DNS01,cluster DNS/external DNS,Blocker,Recreation AKS/IaC
+K8S-PRD,SECRETS-VAULT,secrets + deployment,Blocker,Peut etre inverse selon IaC
+SECRETS-VAULT,PKI01,certificates / mTLS,Important,Certificats applicatifs
+MQ-BROKER,VCENTER01,VM hosted,Blocker,VM-MQ01
+ERPDB,VCENTER01,VM hosted,Blocker,VM-DBERP01

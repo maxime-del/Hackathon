@@ -1,0 +1,7 @@
+﻿Group,Used_By,Purpose,Criticality,Notes
+NRG_DIGITAL_USERS,ECOM-WEB,Customer care admin portal,Medium,
+NRG_SAP_USERS,SAP-ERP,SAP user authentication,High,
+NRG_SAP_SERVICE,SAP-ERP,SAP service accounts,Critical,
+NRG_K8S_ADMINS,K8S-PRD,Cluster administration,Critical,
+NRG_DB_ADMINS,ERPDB; ORDERDB,Database admin,Critical,
+NRG_WMS_USERS,WMS,Warehouse staff,High,

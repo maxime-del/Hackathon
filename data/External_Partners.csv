@@ -1,0 +1,4 @@
+﻿Partner,Service,Connected_Asset,SLA,Contact_Mode,Recovery_Dependency
+PSP-PaymentOne,Credit card authorization,VPN-PAYMENT; PAY-ADAPTER,99.9%,24/7 hotline,Certificates + VPN + allowlist
+CarrierFast,Shipment labels,TMS,Business hours,Portal,SaaS credentials
+SalesCloud,CRM SaaS,CRM-SFDC,Provider standard,Admin console,SSO or break-glass accounts

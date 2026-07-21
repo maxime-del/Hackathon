@@ -1,0 +1,9 @@
+﻿Asset,Status,Confidence,Immediate_Action,P01_Impact
+AD01/AD02,Compromised,High,Do not restore blindly; evaluate clean forest strategy,Blocker
+DNS01/DNS02,Unavailable,High,Rebuild or restore clean DNS zone,Blocker
+SAP-ERP,Unavailable,High,Restore app servers after ERPDB and identity baseline,Blocker
+ERPDB,Potentially intact but inaccessible,Medium,Validate RMAN vault copy and TDE wallet,Blocker
+K8S-PRD,"Partially available, admin auth degraded",Medium,Redeploy workloads in clean subscription if needed,Blocker
+ORDERDB,"Cloud PITR available, vault lagging",Medium,Decide trust model for cloud PITR vs immutable copy,Blocker
+API-GW,5xx > 80%,High,Restore config; verify manual hotfix,Blocker
+PAY-ADAPTER,Unknown,Low,Test PSP tunnel and certs,Blocker for paid orders

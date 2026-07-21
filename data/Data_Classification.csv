@@ -1,0 +1,5 @@
+﻿Data_Set,Classification,Process,RPO,Regulatory_Concern,Notes
+ORDERDB.orders,Confidential - Customer data,P01,15m,GDPR,Donnees clients et commandes
+ERPDB.sales_orders,Confidential - Financial data,P01/P02/P05,15m,Financial reporting,Commandes et facturation
+PAY-ADAPTER.tokens,Restricted - PCI tokens,P01/P02,0?,PCI DSS contractual,Pas de PAN stocke
+CRM-SFDC.cases,Confidential - Customer data,P04,4h,GDPR,Tickets support

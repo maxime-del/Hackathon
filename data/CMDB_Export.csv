@@ -1,0 +1,41 @@
+﻿CI_ID,Name,Type,Environment,Criticality,Owner,Location,RTO_Declared,Backup_Policy,Lifecycle_Status,Notes
+APP001,ECOM-WEB,Application,PROD,Critical,Digital Commerce,Azure West Europe,4h,Container image + config repo,Active,Front web e-commerce
+APP002,API-GW,Application,PROD,Critical,Platform API,Azure West Europe,4h,Config Git daily,Active,Kong gateway; config backup non alignee avec RTO
+APP003,ORDER-MGT,Application,PROD,High,Digital Commerce,K8S-PRD,8h,Image registry + DB backup,Active,Criticalite sous-evaluee vs processus P01
+APP004,SAP-ERP,Application,PROD,Critical,Finance IT,DC1 VMware,8h,VM backup + Oracle RMAN,Active,RTO declare incompatible avec P01 RTO 4h
+APP005,PAY-ADAPTER,Application,PROD,Medium,,K8S-PRD,24h,Container image only,Active,Owner manquant; dependance paiement
+APP006,WMS,Application,PROD,High,Supply Chain IT,DC1 VMware,8h,VM daily,Active,Entrepot
+APP007,TMS,Application,PROD,Medium,Supply Chain IT,SaaS,24h,SaaS provider,Active,Transport
+APP008,CRM-SFDC,SaaS,PROD,Medium,Customer Care,SaaS,24h,SaaS export weekly,Active,Support client
+APP009,POS-STORE,Application,PROD,High,Retail IT,Stores + DC1,6h,Store replication hourly,Active,Encaissement
+APP010,BI-REPORT,Application,PROD,Medium,Finance IT,Azure,72h,Daily export,Active,Reporting finance
+APP011,PIM,Application,PROD,Medium,Offer IT,Azure,24h,Daily DB backup,Active,Product information
+APP012,MDM-CUSTOMER,Application,PROD,High,Data Office,DC1 VMware,12h,Daily DB backup,Active,Referentiel clients
+APP013,REDIS-CART,Cache,PROD,Low,Digital Commerce,Azure Redis,24h,None,Retired?,Utilise par ECOM-WEB selon fiche applicative mais statut CMDB ambigu
+APP014,CDN-PUBLIC,External Service,PROD,Medium,Digital Commerce,Provider,24h,Provider,Active,Cache statique
+DB001,ERPDB,Database Oracle,PROD,Critical,DBA Team,DC1 VMware,4h,RMAN + vault,Active,Donnees SAP
+DB002,ORDERDB,Database PostgreSQL,PROD,High,DBA Team,Azure PostgreSQL,8h,PITR 15m + immutable copy,Active,Donnees commandes; absent BIA
+DB003,WMSDB,Database SQL Server,PROD,High,DBA Team,DC1 VMware,8h,Daily full + hourly log,Active,Donnees entrepot
+DB004,DWH,Database,PROD,Medium,Data Office,Azure,72h,Daily snapshot,Active,Data warehouse
+INF001,AD01,Active Directory DC,PROD,Critical,Identity,DC1,2h,System state weekly,Active,Domaine NR.LOCAL
+INF002,AD02,Active Directory DC,PROD,Critical,Identity,DC2,2h,System state weekly,Active,Domaine NR.LOCAL
+INF003,DNS01,DNS,PROD,Critical,Network,DC1,2h,Config export weekly,Active,Zone interne novaretail.local
+INF004,DNS02,DNS,PROD,Critical,Network,DC2,2h,Config export weekly,Active,Secondaire
+INF005,PKI01,PKI,PROD,High,Identity,DC1,8h,CA backup monthly,Active,Certificats internes API/TLS
+INF006,NTP01,NTP,PROD,High,Network,DC1,4h,Config export quarterly,Active,Temps pour Kerberos et logs
+INF007,VCENTER01,VMware vCenter,PROD,Critical,Compute,DC1,4h,VCSA backup daily,Active,Gestion clusters VMware
+INF008,ESX-CLUSTER-PROD01,VMware Cluster,PROD,Critical,Compute,DC1,4h,N/A,Active,Heberge SAP/WMS/infra
+INF009,K8S-PRD,Kubernetes Cluster,PROD,Critical,Cloud Platform,Azure AKS,4h,IaC + etcd backup daily,Active,Heberge ECOM/API/ORDER/PAY
+INF010,SECRETS-VAULT,Secrets Manager,PROD,Critical,Cloud Platform,Azure,4h,Config export daily,Active,Secrets applicatifs; absent BIA
+INF011,MQ-BROKER,Middleware MQ,PROD,High,Integration,DC1 VMware,8h,Config weekly,Active,Flux commandes vers ERP/WMS
+INF012,SMTP01,SMTP Relay,PROD,Medium,Messaging,DC1,24h,Config weekly,Active,Notifications client
+INF013,FW-EDGE-01,Firewall,PROD,Critical,Network Security,DC1,4h,Config daily,Active,Filtrage flux DC/Azure/Internet
+INF014,VPN-PAYMENT,VPN Tunnel,PROD,Critical,Network Security,Provider payment,4h,Config daily,Active,Tunnel vers PSP
+INF015,BACKUP-ORCH,Backup Platform,PROD,Critical,Backup,DC2,4h,Self-backup daily,Active,Orchestration sauvegardes
+INF016,CYBER-VAULT,Cyber Recovery Vault,ISOLATED,Critical,Cyber Resilience,DC2 isolated,4h,Immutable,Active,Accessible apres validation manuelle
+INF017,SIEM-XDR,Security Monitoring,PROD,High,SOC,SaaS,8h,Provider,Active,Detection et investigations
+SRV001,VM-ERP01,Server,PROD,Critical,Compute,DC1,4h,VM daily,Active,SAP app server
+SRV002,VM-ERP02,Server,PROD,Critical,Compute,DC1,4h,None?,Active,SAP app server; protection backup incertaine
+SRV003,VM-DBERP01,Server,PROD,Critical,Compute,DC1,4h,VM daily + RMAN,Active,Oracle ERPDB
+SRV004,VM-WMS01,Server,PROD,High,Compute,DC1,8h,VM daily,Active,WMS app
+SRV005,VM-MQ01,Server,PROD,High,Compute,DC1,8h,VM daily,Active,MQ broker

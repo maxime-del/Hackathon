@@ -1,0 +1,8 @@
+﻿VM,Cluster,Datastore,OS,Application,Power_State,Backup_Protected,Notes
+VM-ERP01,ESX-CLUSTER-PROD01,DS-PROD-01,Linux,SAP-ERP,On before incident,Yes,
+VM-ERP02,ESX-CLUSTER-PROD01,DS-PROD-01,Linux,SAP-ERP,On before incident,Unknown,CMDB dit SAP mais backup non confirme
+VM-DBERP01,ESX-CLUSTER-PROD01,DS-DATA-01,Linux,ERPDB,On before incident,Yes,Oracle RMAN prioritaire
+VM-WMS01,ESX-CLUSTER-PROD01,DS-PROD-02,Windows,WMS,On before incident,Yes,
+VM-MQ01,ESX-CLUSTER-PROD01,DS-PROD-02,Linux,MQ-BROKER,On before incident,Yes,
+VM-AD01,ESX-CLUSTER-INFRA,DS-INFRA-01,Windows,AD01,On before incident,Weekly,Restore AD non trivial
+VM-DNS01,ESX-CLUSTER-INFRA,DS-INFRA-01,Windows,DNS01,On before incident,Weekly,AD-integrated DNS

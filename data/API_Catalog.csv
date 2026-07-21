@@ -1,0 +1,6 @@
+﻿API,Provider,Consumer,Criticality,Auth,Backend,Notes
+/orders,ORDER-MGT,ECOM-WEB via API-GW,Critical,OAuth2 + mTLS,ORDERDB; SAP-ERP; PAY-ADAPTER,Chemin critique P01
+/stock/reserve,SAP-ERP,ORDER-MGT,Critical,service account,ERPDB,Reserve stock commande
+/payments/authorize,PAY-ADAPTER,ORDER-MGT,Critical,mTLS,External PSP,Flux VPN-PAYMENT
+/customers/profile,MDM-CUSTOMER,ORDER-MGT; CRM-SFDC,Medium,OAuth2,MDMDB,Peut etre degrade pour commande invite
+/notifications/email,SMTP01,ORDER-MGT,Low,SMTP relay,SMTP01,Notification non bloquante

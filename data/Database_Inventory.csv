@@ -1,0 +1,5 @@
+﻿Database,Engine,HA_Mode,Size_GB,Application,Encryption,Last_Integrity_Check,Notes
+ERPDB,Oracle 19c,DataGuard sync DC1/DC2,4200,SAP-ERP,TDE wallet,2026-06-01,Wallet necessaire pour restore
+ORDERDB,PostgreSQL 14,Cloud managed HA,850,ORDER-MGT,Cloud KMS,2026-06-07,PITR OK mais immutability insuffisante
+WMSDB,SQL Server 2019,Single VM + logs,620,WMS,TDE,2026-05-20,RPO P03 non respecte
+DWH,Synapse,Cloud,6000,BI-REPORT,Cloud KMS,2026-06-05,Non prioritaire P01

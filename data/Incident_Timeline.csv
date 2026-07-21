@@ -1,0 +1,7 @@
+﻿Time,Event,Impact,Decision
+2026-06-08 08:03,EDR alert on AD01,Possible credential theft,SOC investigation started
+2026-06-08 08:07,File encryption pattern on SAP app server,SAP unavailable risk,Isolate VLAN SAP
+2026-06-08 08:15,SEV1 ransomware declared,Major business interruption,Crisis cell activated
+2026-06-08 08:21,DNS unavailable,Name resolution down for DC apps,Freeze changes
+2026-06-08 08:30,Cyber vault reachable,Potential clean restore source,Start clean room access process
+2026-06-08 08:45,COMEX request,Need recovery path for P01,Cyber resilience team to provide rebuild plan

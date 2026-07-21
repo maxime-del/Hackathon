@@ -1,0 +1,5 @@
+﻿Namespace,Workload,Application,Replicas,Image,Secrets,Config_Source,Notes
+prod-web,ecom-web,ECOM-WEB,6,registry.novaretail/ecom-web:2.18.4,ecom-web-tls; ecom-api-client,GitOps,Stateless
+prod-api,api-gw,API-GW,3,registry.novaretail/api-gw:1.12.1,api-gw-cert; oidc-client,GitOps + manual hotfix,Manual hotfix du 2026-06-06 non committe
+prod-order,order-mgt,ORDER-MGT,4,registry.novaretail/order-mgt:4.7.9,orderdb-password; sap-connector; payment-mtls,GitOps,Depend de secrets vault
+prod-pay,pay-adapter,PAY-ADAPTER,2,registry.novaretail/pay-adapter:3.3.0,psp-mtls-cert,GitOps,Owner CMDB manquant
