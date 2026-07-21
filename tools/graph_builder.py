@@ -67,7 +67,7 @@ def build_dependency_graph(process_id: str = "P01") -> nx.DiGraph:
         f = facts.get(node, NodeFacts(node=node))
         confidence, reasons, sources = score_node_confidence(f)
         sub.nodes[node]["facts"] = f
-        sub.nodes[node]["category"] = human_category(node)
+        sub.nodes[node]["category"] = human_category(node, f.cmdb_type)
         sub.nodes[node]["confidence"] = confidence
         sub.nodes[node]["confidence_reasons"] = reasons
         sub.nodes[node]["confidence_sources"] = sources

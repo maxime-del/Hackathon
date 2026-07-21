@@ -1,54 +1,65 @@
 """
-Classement des noeuds techniques en categories humaines (persona "Karim")
-et enrichissement de chaque noeud avec les faits bruts qui le concernent
-(CMDB, sauvegardes, coffre cyber, evaluation d'impact, vulnerabilites).
+Classement des noeuds techniques en categories et enrichissement de
+chaque noeud avec les faits bruts qui le concernent (CMDB, sauvegardes,
+coffre cyber, evaluation d'impact, vulnerabilites).
 
 Tout est deterministe: on ne fait ici que des jointures/lookups sur les
-dataframes charges par data_loader.load_all().
+dataframes charges par data_loader.load_all(). La categorie n'est PAS un
+dictionnaire code en dur par nom d'actif (ca ne marcherait que sur le
+corpus NovaRetail) - elle est deduite par mots-cles generiques a partir
+du champ CMDB "Type" (ex: "Database Oracle" -> Donnees, "DNS" -> Reseau),
+donc reutilisable sur n'importe quel export CMDB.
 """
 from dataclasses import dataclass, field
 import pandas as pd
 
 from tools.schema_mapping import get_table
 
-# Categorie humaine par noeud technique (heuristique fixe, basee sur le
-# vocabulaire metier NovaRetail). Un noeud absent de ce mapping tombe dans
-# "Autre".
-HUMAN_CATEGORY = {
-    "P01": "Processus",
-    "AD01": "Identite", "AD02": "Identite", "IAM-SSO": "Identite",
-    "DNS01": "Reseau / DNS", "DNS02": "Reseau / DNS", "NTP01": "Reseau / DNS",
-    "FW-EDGE-01": "Reseau / DNS", "VPN-PAYMENT": "Reseau / DNS",
-    "PKI01": "Certificats (PKI)",
-    "SECRETS-VAULT": "Coffre-fort secrets", "CYBER-VAULT": "Coffre-fort secrets",
-    "VCENTER01": "Serveurs (compute)", "ESX-CLUSTER-PROD01": "Serveurs (compute)",
-    "K8S-PRD": "Serveurs (compute)",
-    "VM-ERP01": "Serveurs (compute)", "VM-ERP02": "Serveurs (compute)",
-    "VM-DBERP01": "Serveurs (compute)", "VM-WMS01": "Serveurs (compute)",
-    "VM-MQ01": "Serveurs (compute)",
-    "ERPDB": "Donnees", "ORDERDB": "Donnees", "WMSDB": "Donnees", "DWH": "Donnees",
-    "SAP-ERP": "Boutique", "ECOM-WEB": "Boutique", "ORDER-MGT": "Boutique",
-    "REDIS-CART": "Boutique", "CDN-PUBLIC": "Boutique",
-    "API-GW": "Boutique",
-    "PAY-ADAPTER": "Paiement",
-    "WMS": "Stock & Livraison", "TMS": "Stock & Livraison",
-    "MQ-BROKER": "Stock & Livraison",
-    "CRM-SFDC": "Service client", "MDM-CUSTOMER": "Service client",
-    "BI-REPORT": "Autre", "PIM": "Autre", "POS-STORE": "Autre",
-    "SMTP01": "Autre", "SIEM-XDR": "Securite / Supervision",
-    "BACKUP-ORCH": "Sauvegardes",
-}
+# Regles generiques: mots-cles cherches dans le champ CMDB "Type" (en
+# minuscule). La premiere regle qui matche l'emporte. Aucun nom d'actif
+# n'apparait ici - uniquement du vocabulaire d'infrastructure generique.
+_CATEGORY_RULES: list[tuple[list[str], str]] = [
+    (["directory", "identity", "iam", "sso", "active directory"], "Identite"),
+    (["dns", "ntp", "firewall", "vpn", "network", "load balanc"], "Reseau / DNS"),
+    (["pki", "certificat", "certificate", "ca "], "Certificats (PKI)"),
+    (["secret", "vault"], "Coffre-fort secrets"),
+    (["monitoring", "siem", "xdr", "security"], "Securite / Supervision"),
+    (["backup"], "Sauvegardes"),
+    (["database", "db2", "oracle", "postgres", "sql server", "data warehouse", "dwh"], "Donnees"),
+    (["vmware", "vcenter", "kubernetes", "cluster", "server", "compute", "esx"], "Serveurs (compute)"),
+    (["middleware", "message", "broker", " mq", "smtp", "cache", "redis"], "Integration & messagerie"),
+    (["application", "saas", "external service", "api"], "Applications"),
+]
 
-# Ordre d'affichage des couches techniques (utilise pour la vue "architecte")
+# Ordre d'affichage des couches (categories generiques, reutilisable sur
+# n'importe quel corpus - contrairement aux anciennes categories "metier"
+# type "Boutique"/"Paiement" qui etaient specifiques a NovaRetail).
 LAYER_ORDER = [
     "Identite", "Reseau / DNS", "Certificats (PKI)", "Coffre-fort secrets",
     "Securite / Supervision", "Sauvegardes", "Serveurs (compute)", "Donnees",
-    "Boutique", "Paiement", "Stock & Livraison", "Service client", "Autre",
+    "Applications", "Integration & messagerie", "Autre",
 ]
 
+CATEGORY_ICONS = {
+    "Identite": "🪪", "Reseau / DNS": "🌐", "Certificats (PKI)": "🔏",
+    "Coffre-fort secrets": "🔐", "Securite / Supervision": "🛡️", "Sauvegardes": "💾",
+    "Serveurs (compute)": "🖥️", "Donnees": "🗄️", "Applications": "🧩",
+    "Integration & messagerie": "🔗", "Autre": "❔",
+}
 
-def human_category(node: str) -> str:
-    return HUMAN_CATEGORY.get(node, "Autre")
+
+def human_category(node: str, cmdb_type: str | None = None) -> str:
+    """Categorie generique deduite du type CMDB (mots-cles). Sans type
+    documente, l'actif tombe dans 'Autre' plutot que d'etre devine par
+    son nom - on ne veut pas remplacer un dictionnaire code en dur par
+    un autre."""
+    haystack = f"{cmdb_type or ''}".lower()
+    if not haystack.strip():
+        return "Autre"
+    for keywords, category in _CATEGORY_RULES:
+        if any(kw in haystack for kw in keywords):
+            return category
+    return "Autre"
 
 
 @dataclass

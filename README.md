@@ -48,6 +48,21 @@ specifiques (ex. coffre-fort SECRETS-VAULT, IP DNS perimee) restent
 calibrees sur les noms d'actifs du cas NovaRetail et ne se declencheront
 que sur un corpus qui les reprend.
 
+## Interface — deux pages
+
+- **📂 Depot des sources** (`views/upload.py`) — depot des fichiers, description
+  du probleme, bouton "Lancer le diagnostic". Calcule une fois et stocke le
+  resultat en session.
+- **📊 Dashboard** (`views/dashboard.py`) — ne recalcule jamais rien, lit
+  uniquement le resultat stocke. Organise en 4 onglets pour rester lisible :
+  **Cartographie** (graphe des dependances + etat des services par metier),
+  **Top actions urgentes** (validations professionnelles bloquantes + decisions
+  a risque eleve + anomalies), **Plan de reprise d'activite** (l'ordre complet,
+  etape par etape, avec un badge de risque visible sur chaque decision),
+  **Assistant & export** (resume, questions libres, export Markdown, traces
+  des agents).
+- Theme clair/professionnel configure dans `.streamlit/config.toml`.
+
 ## Structure
 
 - `data/` — CSV du corpus NovaRetail (05_Datasets + 06_Incident) et `data/docs/`
@@ -57,9 +72,9 @@ que sur un corpus qui les reprend.
   partage entre agents (`state.py`)
 - `tools/` — fonctions deterministes appelees par les agents : construction
   du graphe, ordre de reconstruction, controles d'anomalies, calcul de
-  risque, RAG (TF-IDF) sur les documents texte
+  risque, facteur de risque par decision (`decision_risk.py`), RAG (TF-IDF)
+  sur les documents texte
 - `agents/` — `graph_agent`, `anomaly_agent`, `risk_agent`, `decider_agent`,
   `translator_agent`, et `ingestion_agent` qui orchestre les cinq dans l'ordre
 - `prompts/` — system prompt de chaque agent
-- `app.py` — interface Streamlit (mode Gerant / mode Architecte), ne lit que
-  l'etat produit par `agents.ingestion_agent`
+- `app.py` — routeur `st.navigation` entre les deux pages de `views/`
