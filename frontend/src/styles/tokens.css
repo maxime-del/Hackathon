@@ -1,0 +1,104 @@
+:root {
+  /* ---- brand: night-sea ink + rescue-flare signal + lighthouse beacon ---- */
+  --ink: #0a0f16;
+  --ink-soft: #121a24;
+  --signal: #ff5a36; /* SOS flare — logo, primary actions, urgent focus */
+  --signal-hover: #e6482a;
+  --signal-soft: #ffe6de;
+  --beacon: #17b6ac; /* Phare, the assistant — its own accent, never for actions */
+  --beacon-hover: #129e95;
+  --beacon-soft: #dff5f3;
+
+  /* ---- surfaces ---- */
+  --canvas: #f4f2ec;
+  --panel: #ffffff;
+  --panel-head: #fbfaf7;
+  --sidebar: #0a0f16;
+  --sidebar-line: #212b38;
+  --sidebar-text: #aab4c2;
+  --sidebar-text-dim: #6b7684;
+  --border: #e3ded2;
+  --border-strong: #cdc6b4;
+
+  /* ---- text ---- */
+  --text-primary: #171310;
+  --text-secondary: #5b5548;
+  --text-muted: #938c7c;
+  --text-on-accent: #ffffff;
+
+  /* legacy alias kept for components still referencing --accent */
+  --accent: var(--signal);
+  --accent-hover: var(--signal-hover);
+  --accent-soft: var(--signal-soft);
+
+  /* ---- status semantics: shared across confidence + risk badges ---- */
+  --ok: #157a4a;
+  --ok-soft: #e2f4ea;
+  --warn: #a3720a;
+  --warn-soft: #faf0d8;
+  --danger: #b5203a;
+  --danger-soft: #fbe4e8;
+  --neutral: #6b6456;
+  --neutral-soft: #ece8dd;
+
+  /* ---- type ---- */
+  --font-display: "Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --radius-sm: 5px;
+  --radius-md: 9px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 1px 2px rgba(23, 19, 16, 0.05);
+  --shadow-md: 0 6px 20px -6px rgba(23, 19, 16, 0.14);
+  --shadow-lg: 0 18px 44px -12px rgba(10, 15, 22, 0.22);
+
+  --rail-w: 236px;
+  --topbar-h: 60px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #05070b;
+    --ink-soft: #0d131c;
+    --signal: #ff7a58;
+    --signal-hover: #ff8f70;
+    --signal-soft: #3a1c14;
+    --beacon: #3fd6cb;
+    --beacon-hover: #63e2d9;
+    --beacon-soft: #0f2e2c;
+
+    --canvas: #10141b;
+    --panel: #171c25;
+    --panel-head: #1c222c;
+    --sidebar: #070a10;
+    --sidebar-line: #1c222c;
+    --sidebar-text: #9aa5b3;
+    --sidebar-text-dim: #57616f;
+    --border: #262d38;
+    --border-strong: #363f4c;
+
+    --text-primary: #edeef1;
+    --text-secondary: #a7aebb;
+    --text-muted: #6d7684;
+    --text-on-accent: #0a0f16;
+
+    --accent: var(--signal);
+    --accent-hover: var(--signal-hover);
+    --accent-soft: var(--signal-soft);
+
+    --ok: #3ec080;
+    --ok-soft: #123527;
+    --warn: #e0a83c;
+    --warn-soft: #3a2c12;
+    --danger: #f16c80;
+    --danger-soft: #3a1b21;
+    --neutral: #8892a0;
+    --neutral-soft: #232a34;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 6px 20px -6px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 18px 44px -12px rgba(0, 0, 0, 0.55);
+  }
+}
