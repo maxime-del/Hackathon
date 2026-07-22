@@ -1,13 +1,13 @@
 """
-SOS Redemarrage - Page 1/2 : Depot des sources. Le calcul (graphe, ordre
+SOS Redémarrage - Page 1/2 : Dépôt des sources. Le calcul (graphe, ordre
 de reconstruction, anomalies, euros) est fait une seule fois ici par les
-agents specialises, puis stocke dans st.session_state pour que la page
-Dashboard n'ait qu'a le lire - jamais de recalcul en changeant de page.
+agents spécialisés, puis stocké dans st.session_state pour que la page
+Dashboard n'ait qu'à le lire - jamais de recalcul en changeant de page.
 
-Les fichiers source (CSV + .docx) peuvent etre ceux de l'exemple NovaRetail
-livre dans data/, ou deposes par l'utilisateur - dans ce second cas, noms
-de fichiers et noms de colonnes peuvent etre totalement differents:
-`tools.schema_mapping` les reconnait par similarite de colonnes plutot que
+Les fichiers source (CSV + .docx) peuvent être ceux de l'exemple NovaRetail
+livré dans data/, ou déposés par l'utilisateur - dans ce second cas, noms
+de fichiers et noms de colonnes peuvent être totalement différents :
+`tools.schema_mapping` les reconnaît par similarité de colonnes plutôt que
 par nom exact.
 """
 import pandas as pd
@@ -31,8 +31,8 @@ def _read_uploaded_csv(uploaded_file) -> pd.DataFrame | None:
 
 
 def prepare_dataset(csv_files, docx_files, incident_dt_text: str) -> list:
-    """Bascule le moteur sur les fichiers uploades (ou revient au jeu
-    d'exemple NovaRetail si rien n'est depose). Renvoie le rapport de
+    """Bascule le moteur sur les fichiers uploadés (ou revient au jeu
+    d'exemple NovaRetail si rien n'est déposé). Renvoie le rapport de
     classification pour affichage."""
     report = []
     if csv_files:
@@ -40,7 +40,7 @@ def prepare_dataset(csv_files, docx_files, incident_dt_text: str) -> list:
         for f in csv_files:
             df = _read_uploaded_csv(f)
             if df is None:
-                st.warning(f"⚠️ Impossible de lire `{f.name}` comme un CSV valide — ignore.")
+                st.warning(f"⚠️ Impossible de lire `{f.name}` comme un CSV valide — ignoré.")
                 continue
             df.columns = [str(c).strip() for c in df.columns]
             uploads[f.name] = df
@@ -49,7 +49,7 @@ def prepare_dataset(csv_files, docx_files, incident_dt_text: str) -> list:
         try:
             data_loader.set_incident_time(pd.Timestamp(incident_dt_text))
         except (ValueError, TypeError):
-            st.warning(f"⚠️ Date d'incident '{incident_dt_text}' illisible — heure par defaut conservee.")
+            st.warning(f"⚠️ Date d'incident '{incident_dt_text}' illisible — heure par défaut conservée.")
     else:
         data_loader.clear_active_tables()
 
@@ -62,20 +62,20 @@ def prepare_dataset(csv_files, docx_files, incident_dt_text: str) -> list:
 
 
 # ---------------------------------------------------------------- header --
-st.title("🆘 SOS Redemarrage")
+st.title("🆘 SOS Redémarrage")
 st.caption(
-    "Copilote de reprise apres cyberattaque — traduit le diagnostic technique en langage clair "
-    "pour un dirigeant sans DSI. Cas d'usage par defaut : NovaRetail, processus P01 (commandes e-commerce)."
+    "Copilote de reprise après cyberattaque — traduit le diagnostic technique en langage clair "
+    "pour un dirigeant sans DSI. Cas d'usage par défaut : NovaRetail, processus P01 (commandes e-commerce)."
 )
 
 st.divider()
 
 # ------------------------------------------------------------ vos fichiers --
-st.header("📂 1. Deposez vos sources")
+st.header("📂 1. Déposez vos sources")
 st.caption(
     "Exports CSV du SI et documents `.docx` (PRA, rapports, notes...) — noms de fichiers et noms de "
-    "colonnes peuvent etre completement differents de l'exemple, le systeme les reconnait automatiquement "
-    "par similarite. Sans depot, la demo tourne sur le cas NovaRetail fourni."
+    "colonnes peuvent être complètement différents de l'exemple, le système les reconnaît automatiquement "
+    "par similarité. Sans dépôt, la démo tourne sur le cas NovaRetail fourni."
 )
 with st.container(border=True):
     col_csv, col_docx = st.columns(2)
@@ -86,7 +86,7 @@ with st.container(border=True):
 
     if csv_files:
         incident_dt_text = st.text_input(
-            "Date/heure de declaration de l'incident (sert au calcul des ecarts RPO)",
+            "Date/heure de déclaration de l'incident (sert au calcul des écarts RPO)",
             value="2026-06-08 08:15",
         )
     else:
@@ -95,13 +95,13 @@ with st.container(border=True):
 st.divider()
 
 # ---------------------------------------------------------- entree gerant --
-st.header("💬 2. Decrivez le probleme")
+st.header("💬 2. Décrivez le problème")
 with st.container(border=True):
     col_in, col_q = st.columns([2, 1])
     with col_in:
         user_message = st.text_area(
-            "Decrivez le probleme avec vos mots",
-            value="Mon site de commandes ne marche plus, aide-moi a le redemarrer.",
+            "Décrivez le problème avec vos mots",
+            value="Mon site de commandes ne marche plus, aide-moi à le redémarrer.",
             height=80,
         )
     with col_q:
@@ -116,31 +116,32 @@ if run:
         st.session_state["engine_state"] = ingestion_agent.run(PROCESS_ID)
     st.session_state["classification_report"] = classification_report
     st.session_state["diagnosed"] = True
+    st.session_state["completed_steps"] = set()
 
 st.divider()
 
 # --------------------------------------------- rapport de reconnaissance ----
 report = st.session_state.get("classification_report") or []
 if report:
-    st.header("🔎 Reconnaissance des fichiers deposes")
+    st.header("🔎 Reconnaissance des fichiers déposés")
     found_roles = {r.role for r in report if r.role}
     for r in report:
         if r.role:
             st.success(f"`{r.filename}` → reconnu comme **{r.role}** (confiance {r.score:.0%})")
         else:
-            st.warning(f"`{r.filename}` → non reconnu (meilleur score {r.score:.0%}), ignore")
+            st.warning(f"`{r.filename}` → non reconnu (meilleur score {r.score:.0%}), ignoré")
     missing_roles = sorted(set(ROLE_SCHEMAS.keys()) - found_roles)
     if missing_roles:
         st.info(
-            "Roles non couverts par vos fichiers : " + ", ".join(f"`{r}`" for r in missing_roles) +
-            ". Les analyses qui en dependent seront incompletes ou absentes, plutot que devinees."
+            "Rôles non couverts par vos fichiers : " + ", ".join(f"`{r}`" for r in missing_roles) +
+            ". Les analyses qui en dépendent seront incomplètes ou absentes, plutôt que devinées."
         )
     st.divider()
 
 # ------------------------------------------------------------------ suite --
 if st.session_state.get("diagnosed"):
-    st.success("✅ Diagnostic pret. Ouvrez la page **Dashboard** dans le menu a gauche pour voir les resultats.")
+    st.success("✅ Diagnostic prêt. Ouvrez la page **Dashboard** dans le menu à gauche pour voir les résultats.")
     if st.button("📊 Aller au Dashboard", type="primary"):
         st.switch_page("views/dashboard.py")
 else:
-    st.info("Cliquez sur *Lancer le diagnostic* pour generer le plan de reprise.")
+    st.info("Cliquez sur *Lancer le diagnostic* pour générer le plan de reprise.")

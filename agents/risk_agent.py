@@ -1,6 +1,6 @@
 """
-Specialiste "risque financier": appelle le calcul deterministe (ecart RPO
-x cout horaire du BIA, generalise a tous les actifs), puis demande a Qwen
+Spécialiste "risque financier" : appelle le calcul déterministe (écart RPO
+x coût horaire du BIA, généralisé à tous les actifs), puis demande à Qwen
 une explication courte du pourquoi - jamais un recalcul.
 """
 from pathlib import Path
@@ -32,8 +32,8 @@ def run(state: EngineState) -> EngineState:
         RiskItem(
             asset=exp.asset, process_id=exp.process_id,
             description=(
-                f"Ecart entre le RPO cible ({exp.rpo_target}) et la derniere sauvegarde fiable "
-                f"({exp.last_reliable_backup}), soit {exp.gap_hours:.1f}h exposees."
+                f"Écart entre le RPO cible ({exp.rpo_target}) et la dernière sauvegarde fiable "
+                f"({exp.last_reliable_backup}), soit {exp.gap_hours:.1f}h exposées."
             ),
             rpo_target=exp.rpo_target, last_reliable_backup=exp.last_reliable_backup.to_pydatetime(),
             gap_hours=exp.gap_hours, eur_per_hour=exp.eur_per_hour,
@@ -47,18 +47,18 @@ def run(state: EngineState) -> EngineState:
     top = items[0]
     others = items[1:]
     context = (
-        f"Actif le plus expose: {top.asset}. RPO cible: {top.rpo_target}. Derniere sauvegarde fiable: "
-        f"{top.last_reliable_backup}. Ecart: {top.gap_hours:.1f}h. Cout: {eur(top.eur_per_hour)}/h. "
-        f"Perte estimee: {eur(top.estimated_loss_eur)}. Note: {top.confidence_note} "
-        f"(sources: {', '.join(top.sources)}).\n"
-        + ("Autres actifs egalement en violation de RPO: " + ", ".join(
+        f"Actif le plus exposé : {top.asset}. RPO cible : {top.rpo_target}. Dernière sauvegarde fiable : "
+        f"{top.last_reliable_backup}. Écart : {top.gap_hours:.1f}h. Coût : {eur(top.eur_per_hour)}/h. "
+        f"Perte estimée : {eur(top.estimated_loss_eur)}. Note : {top.confidence_note} "
+        f"(sources : {', '.join(top.sources)}).\n"
+        + ("Autres actifs également en violation de RPO : " + ", ".join(
             f"{it.asset} ({eur(it.estimated_loss_eur)})" for it in others
         ) if others else "Aucun autre actif en violation de RPO.")
     )
     fallback = (
-        f"L'actif le plus expose est {top.asset} : la derniere sauvegarde fiable date d'avant l'incident de "
-        f"{top.gap_hours:.1f} heures, ce qui represente environ {eur(top.estimated_loss_eur)} de donnees "
-        f"exposees. {top.confidence_note}"
+        f"L'actif le plus exposé est {top.asset} : la dernière sauvegarde fiable date d'avant l'incident de "
+        f"{top.gap_hours:.1f} heures, ce qui représente environ {eur(top.estimated_loss_eur)} de données "
+        f"exposées. {top.confidence_note}"
     )
     state.risk_narrative = call_llm(PROMPT, context, "Explique ce risque en 2-3 phrases.", fallback)
     return state

@@ -1,6 +1,6 @@
 """
-Orchestrateur: appelle chaque specialiste dans l'ordre et fait circuler
-l'etat partage (blackboard). C'est le seul point d'entree que app.py
+Orchestrateur : appelle chaque spécialiste dans l'ordre et fait circuler
+l'état partagé (blackboard). C'est le seul point d'entrée que app.py
 doit appeler.
 """
 from core.state import EngineState

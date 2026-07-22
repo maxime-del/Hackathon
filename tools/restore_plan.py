@@ -1,8 +1,8 @@
 """
-Calcul de l'ordre de reconstruction: tri topologique du graphe de
-dependances, pondere par criticite et confiance des sauvegardes.
+Calcul de l'ordre de reconstruction : tri topologique du graphe de
+dépendances, pondéré par criticité et confiance des sauvegardes.
 
-Rien n'est devine: le code calcule un ordre reproductible, l'IA se
+Rien n'est deviné : le code calcule un ordre reproductible, l'IA se
 contentera plus tard de le mettre en phrases.
 """
 from dataclasses import dataclass, field
@@ -31,6 +31,7 @@ class RestoreStep:
     prerequisites: list[str]
     dependents: list[str] = field(default_factory=list)
     edges_in: list[dict] = field(default_factory=list)
+    status_kind: str = "FIABLE"
 
 
 def _break_cycles(G: nx.DiGraph) -> list[tuple[str, str]]:
@@ -96,5 +97,6 @@ def compute_restore_plan(G: nx.DiGraph, process_id: str = "P01") -> tuple[list[R
             confidence_reasons=data.get("confidence_reasons", []),
             confidence_sources=data.get("confidence_sources", []),
             prerequisites=prereqs, dependents=dependents, edges_in=edges_in,
+            status_kind=data.get("status_kind", "FIABLE"),
         ))
     return steps, broken_cycles

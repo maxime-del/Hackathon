@@ -1,11 +1,11 @@
 """
-Calcul du risque financier residuel, generalise a TOUS les actifs d'un
-processus (plus un seul actif code en dur type "ORDERDB") : pour chaque
-actif ayant une sauvegarde documentee, on compare le RPO cible declare a
-l'ecart reel jusqu'a l'incident, et on chiffre la perte potentielle via
-le cout horaire du processus (BIA). Reste 100% deterministe - seule la
-DETECTION D'ANOMALIES (tools/anomaly_checks.py + anomaly_agent) est
-passee a une analyse LLM ; le calcul de perte financiere n'a pas besoin
+Calcul du risque financier résiduel, généralisé à TOUS les actifs d'un
+processus (plus un seul actif codé en dur type "ORDERDB") : pour chaque
+actif ayant une sauvegarde documentée, on compare le RPO cible déclaré à
+l'écart réel jusqu'à l'incident, et on chiffre la perte potentielle via
+le coût horaire du processus (BIA). Reste 100% déterministe - seule la
+DÉTECTION D'ANOMALIES (tools/anomaly_checks.py + anomaly_agent) est
+passée à une analyse LLM ; le calcul de perte financière n'a pas besoin
 de deviner, juste de ne plus filtrer sur un nom fixe.
 """
 from dataclasses import dataclass, field
@@ -36,7 +36,7 @@ def _insufficient(process_id: str, reason: str) -> FinancialExposure:
     return FinancialExposure(
         asset="?", process_id=process_id, rpo_target=None, last_reliable_backup=None,
         gap_hours=None, eur_per_hour=None, estimated_loss_eur=0.0,
-        confidence_note=f"Donnees insuffisantes pour chiffrer un risque financier : {reason}",
+        confidence_note=f"Données insuffisantes pour chiffrer un risque financier : {reason}",
         sources=[], data_sufficient=False,
     )
 
@@ -63,7 +63,7 @@ def compute_exposures(process_id: str = "P01", top_n: int = 5) -> list[Financial
 
     bia_matches = bia[bia["Process_ID"] == process_id] if "Process_ID" in bia.columns else bia.iloc[0:0]
     if bia_matches.empty or pd.isna(bia_matches.iloc[0].get("Max_Data_Loss_EUR_Hour")):
-        return [_insufficient(process_id, "aucun cout de perte horaire (BIA) trouve pour ce processus")]
+        return [_insufficient(process_id, "aucun coût de perte horaire (BIA) trouvé pour ce processus")]
     bia_row = bia_matches.iloc[0]
     eur_per_hour = float(bia_row["Max_Data_Loss_EUR_Hour"])
     incident_time = get_incident_time()
@@ -78,14 +78,14 @@ def compute_exposures(process_id: str = "P01", top_n: int = 5) -> list[Financial
     for asset, group in backup.groupby("Asset"):
         if pd.isna(asset):
             continue
-        # Le cout horaire du BIA representant des ventes/commandes perdues,
-        # ne l'appliquer qu'aux actifs qui portent reellement de la donnee
-        # metier (bases de donnees) - sinon "sauvegarde vieille de 50 jours"
-        # sur un annuaire ou un DNS se traduirait a tort par des dizaines
+        # Le coût horaire du BIA représentant des ventes/commandes perdues,
+        # ne l'appliquer qu'aux actifs qui portent réellement de la donnée
+        # métier (bases de données) - sinon "sauvegarde vieille de 50 jours"
+        # sur un annuaire ou un DNS se traduirait à tort par des dizaines
         # de millions d'euros de "perte", ce qui n'a pas de sens : une
-        # sauvegarde d'infrastructure perimee n'efface pas des semaines de
-        # chiffre d'affaires, elle signifie juste "config a rejouer".
-        if human_category(str(asset), cmdb_type_by_name.get(asset)) != "Donnees":
+        # sauvegarde d'infrastructure périmée n'efface pas des semaines de
+        # chiffre d'affaires, elle signifie juste "config à rejouer".
+        if human_category(str(asset), cmdb_type_by_name.get(asset)) != "Données":
             continue
         immutable = group[group["Immutability"] == "Yes"] if "Immutability" in group.columns else group.iloc[0:0]
         usable = immutable.iloc[0] if not immutable.empty else group.iloc[0]
@@ -104,8 +104,8 @@ def compute_exposures(process_id: str = "P01", top_n: int = 5) -> list[Financial
         loss = gap_hours * eur_per_hour
         non_immutable = group[group["Immutability"] != "Yes"] if "Immutability" in group.columns else group.iloc[0:0]
         confidence_note = (
-            "Une copie plus recente existe mais n'est pas immuable - non retenue comme base fiable."
-            if not non_immutable.empty else "Aucune copie plus recente disponible."
+            "Une copie plus récente existe mais n'est pas immuable - non retenue comme base fiable."
+            if not non_immutable.empty else "Aucune copie plus récente disponible."
         )
         exposures.append(FinancialExposure(
             asset=str(asset), process_id=process_id, rpo_target=usable.get("RPO_Target"),
@@ -115,7 +115,7 @@ def compute_exposures(process_id: str = "P01", top_n: int = 5) -> list[Financial
         ))
 
     if not exposures:
-        return [_insufficient(process_id, "aucune violation de RPO constatee sur les sauvegardes disponibles")]
+        return [_insufficient(process_id, "aucune violation de RPO constatée sur les sauvegardes disponibles")]
 
     exposures.sort(key=lambda e: -e.estimated_loss_eur)
     return exposures[:top_n]

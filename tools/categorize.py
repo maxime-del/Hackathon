@@ -3,7 +3,7 @@ Classement des noeuds techniques en categories et enrichissement de
 chaque noeud avec les faits bruts qui le concernent (CMDB, sauvegardes,
 coffre cyber, evaluation d'impact, vulnerabilites).
 
-Tout est deterministe: on ne fait ici que des jointures/lookups sur les
+Tout est deterministe : on ne fait ici que des jointures/lookups sur les
 dataframes charges par data_loader.load_all(). La categorie n'est PAS un
 dictionnaire code en dur par nom d'actif (ca ne marcherait que sur le
 corpus NovaRetail) - elle est deduite par mots-cles generiques a partir
@@ -15,19 +15,19 @@ import pandas as pd
 
 from tools.schema_mapping import get_table
 
-# Regles generiques: mots-cles cherches dans le champ CMDB "Type" (en
+# Regles generiques : mots-cles cherches dans le champ CMDB "Type" (en
 # minuscule). La premiere regle qui matche l'emporte. Aucun nom d'actif
 # n'apparait ici - uniquement du vocabulaire d'infrastructure generique.
 _CATEGORY_RULES: list[tuple[list[str], str]] = [
-    (["directory", "identity", "iam", "sso", "active directory"], "Identite"),
-    (["dns", "ntp", "firewall", "vpn", "network", "load balanc"], "Reseau / DNS"),
+    (["directory", "identity", "iam", "sso", "active directory"], "Identité"),
+    (["dns", "ntp", "firewall", "vpn", "network", "load balanc"], "Réseau / DNS"),
     (["pki", "certificat", "certificate", "ca "], "Certificats (PKI)"),
     (["secret", "vault"], "Coffre-fort secrets"),
-    (["monitoring", "siem", "xdr", "security"], "Securite / Supervision"),
+    (["monitoring", "siem", "xdr", "security"], "Sécurité / Supervision"),
     (["backup"], "Sauvegardes"),
-    (["database", "db2", "oracle", "postgres", "sql server", "data warehouse", "dwh"], "Donnees"),
+    (["database", "db2", "oracle", "postgres", "sql server", "data warehouse", "dwh"], "Données"),
     (["vmware", "vcenter", "kubernetes", "cluster", "server", "compute", "esx"], "Serveurs (compute)"),
-    (["middleware", "message", "broker", " mq", "smtp", "cache", "redis"], "Integration & messagerie"),
+    (["middleware", "message", "broker", " mq", "smtp", "cache", "redis"], "Intégration & messagerie"),
     (["application", "saas", "external service", "api"], "Applications"),
 ]
 
@@ -35,16 +35,16 @@ _CATEGORY_RULES: list[tuple[list[str], str]] = [
 # n'importe quel corpus - contrairement aux anciennes categories "metier"
 # type "Boutique"/"Paiement" qui etaient specifiques a NovaRetail).
 LAYER_ORDER = [
-    "Identite", "Reseau / DNS", "Certificats (PKI)", "Coffre-fort secrets",
-    "Securite / Supervision", "Sauvegardes", "Serveurs (compute)", "Donnees",
-    "Applications", "Integration & messagerie", "Autre",
+    "Identité", "Réseau / DNS", "Certificats (PKI)", "Coffre-fort secrets",
+    "Sécurité / Supervision", "Sauvegardes", "Serveurs (compute)", "Données",
+    "Applications", "Intégration & messagerie", "Autre",
 ]
 
 CATEGORY_ICONS = {
-    "Identite": "🪪", "Reseau / DNS": "🌐", "Certificats (PKI)": "🔏",
-    "Coffre-fort secrets": "🔐", "Securite / Supervision": "🛡️", "Sauvegardes": "💾",
-    "Serveurs (compute)": "🖥️", "Donnees": "🗄️", "Applications": "🧩",
-    "Integration & messagerie": "🔗", "Autre": "❔",
+    "Identité": "🪪", "Réseau / DNS": "🌐", "Certificats (PKI)": "🔏",
+    "Coffre-fort secrets": "🔐", "Sécurité / Supervision": "🛡️", "Sauvegardes": "💾",
+    "Serveurs (compute)": "🖥️", "Données": "🗄️", "Applications": "🧩",
+    "Intégration & messagerie": "🔗", "Autre": "❔",
 }
 
 

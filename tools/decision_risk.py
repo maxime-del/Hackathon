@@ -1,14 +1,14 @@
 """
-Facteur de risque par decision de reconstruction: pour chaque etape du
-plan, quantifie ce qui peut mal se passer si on redemarre CE systeme
-maintenant, pour qu'un decideur (PDG, cellule de crise) puisse arbitrer
-vite sans lire le detail technique.
+Facteur de risque par décision de reconstruction : pour chaque étape du
+plan, quantifie ce qui peut mal se passer si on redémarre CE système
+maintenant, pour qu'un décideur (PDG, cellule de crise) puisse arbitrer
+vite sans lire le détail technique.
 
-Deterministe et explicable: le niveau de risque decoule de la confiance
-deja calculee sur le noeud (tools/graph_builder.score_node_confidence),
-des anomalies deja detectees qui le concernent (tools/anomaly_checks),
-et de l'impact financier deja chiffre (tools/risk_calc) - rien n'est
-invente ici, ce module ne fait qu'agreger des faits deja etablis.
+Déterministe et explicable : le niveau de risque découle de la confiance
+déjà calculée sur le noeud (tools/graph_builder.score_node_confidence),
+des anomalies déjà détectées qui le concernent (tools/anomaly_checks),
+et de l'impact financier déjà chiffré (tools/risk_calc) - rien n'est
+inventé ici, ce module ne fait qu'agréger des faits déjà établis.
 """
 from collections import defaultdict
 
@@ -27,12 +27,12 @@ _BASE_LEVEL_BY_CONFIDENCE = {
 _LEVEL_BY_SEVERITY = {"CRITIQUE": "ELEVE", "HAUTE": "MOYEN", "MOYENNE": "FAIBLE"}
 
 _BASE_CONSEQUENCE_BY_CONFIDENCE = {
-    "DANGER": "Redemarrer ce systeme sans verification humaine risque de reintroduire le probleme d'origine "
+    "DANGER": "Redémarrer ce système sans vérification humaine risque de réintroduire le problème d'origine "
               "(sauvegarde compromise ou manquante).",
-    "INCERTAIN": "La sauvegarde disponible n'est pas totalement fiable : redemarrer maintenant peut reposer "
-                 "sur une base incomplete ou perimee.",
-    "INCONNU": "Aucune information fiable sur cet element : le redemarrer sans verification prealable est un pari.",
-    "SUR": "Risque limite : sauvegarde fiable et documentee.",
+    "INCERTAIN": "La sauvegarde disponible n'est pas totalement fiable : redémarrer maintenant peut reposer "
+                 "sur une base incomplète ou périmée.",
+    "INCONNU": "Aucune information fiable sur cet élément : le redémarrer sans vérification préalable est un pari.",
+    "SUR": "Risque limité : sauvegarde fiable et documentée.",
 }
 
 
@@ -61,14 +61,14 @@ def compute_step_risks(
 
         exposure = risk_by_asset.get(step.node)
         if exposure:
-            parts.append(f"Impact chiffre si la donnee est fausse ou perdue : {eur(exposure.estimated_loss_eur)}.")
+            parts.append(f"Impact chiffré si la donnée est fausse ou perdue : {eur(exposure.estimated_loss_eur)}.")
             if RISK_ORDER["ELEVE"] > RISK_ORDER[level]:
                 level = "ELEVE"
 
         if len(step.dependents) >= 3:
             parts.append(
-                f"Attention si vous retardez cette etape : {len(step.dependents)} autres systemes en dependent "
-                f"et resteront bloques."
+                f"Attention si vous retardez cette étape : {len(step.dependents)} autres systèmes en dépendent "
+                f"et resteront bloqués."
             )
 
         updated.append(step.model_copy(update={

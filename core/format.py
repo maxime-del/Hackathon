@@ -1,4 +1,4 @@
-"""Petits helpers de formatage partages (convention francaise: espace comme separateur de milliers)."""
+"""Petits helpers de formatage partagés (convention française : espace comme séparateur de milliers)."""
 
 
 def eur(value: float) -> str:

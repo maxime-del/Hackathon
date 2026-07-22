@@ -1,15 +1,15 @@
 """
-Specialiste "incoherences": un seul controle reste deterministe (l'ecart
-BIA declare vs graphe reel, generique). Tout le reste est desormais une
+Spécialiste "incohérences" : un seul contrôle reste déterministe (l'écart
+BIA déclaré vs graphe réel, générique). Tout le reste est désormais une
 vraie analyse Qwen de la fiche de faits par actif (tools/asset_facts.py) -
-le LLM doit reellement lire les donnees et trouver ce qui cloche, il ne
-reconnait plus des identifiants connus a l'avance. On enrichit ensuite
-chaque constat avec un passage RAG reel s'il en existe un pertinent.
+le LLM doit réellement lire les données et trouver ce qui cloche, il ne
+reconnaît plus des identifiants connus à l'avance. On enrichit ensuite
+chaque constat avec un passage RAG réel s'il en existe un pertinent.
 
-Contrepartie assumee : cette partie n'est plus 100% deterministe (le LLM
-peut varier d'un run a l'autre, ou se tromper) - c'est le prix a payer
+Contrepartie assumée : cette partie n'est plus 100% déterministe (le LLM
+peut varier d'un run à l'autre, ou se tromper) - c'est le prix à payer
 pour fonctionner sur un corpus jamais vu. Si Qwen est indisponible, on
-retombe uniquement sur le controle BIA (mieux que rien, jamais un plantage).
+retombe uniquement sur le contrôle BIA (mieux que rien, jamais un plantage).
 """
 import json
 import re
@@ -95,8 +95,8 @@ def run(state: EngineState) -> EngineState:
         fact_sheet = build_fact_sheet(tables, other_assets, state.process_id)
         raw_response = call_llm_big(
             PROMPT, fact_sheet,
-            "Analyse cette fiche de faits et identifie les incoherences/risques reellement demontres "
-            "(reponds uniquement avec le tableau JSON demande, 5 constats maximum, tres concis).",
+            "Analyse cette fiche de faits et identifie les incohérences/risques réellement démontrés "
+            "(réponds uniquement avec le tableau JSON demandé, 5 constats maximum, très concis).",
             fallback="[]",
         )
         for raw in _parse_findings_json(raw_response)[:5]:
@@ -107,7 +107,7 @@ def run(state: EngineState) -> EngineState:
                 passages = search(f"{finding.asset} {finding.title_tech}", k=1)
                 if passages and passages[0].score > 0.15:
                     p = passages[0]
-                    finding.detail_tech += f" Extrait retrouve dans {p.source}: \"{p.text}\"."
+                    finding.detail_tech += f" Extrait retrouvé dans {p.source} : \"{p.text}\"."
                     if p.source not in finding.sources:
                         finding.sources.append(p.source)
             findings.append(finding)
@@ -117,21 +117,21 @@ def run(state: EngineState) -> EngineState:
     severity_order = {"CRITIQUE": 0, "HAUTE": 1, "MOYENNE": 2}
     state.findings.sort(key=lambda f: severity_order.get(f.severity, 9))
 
-    # Synthese batie deterministiquement a partir des constats (deja
-    # rediges en langage clair par l'analyse ci-dessus) - pas de nouvel
-    # appel LLM ici : ca reduirait encore la latence et le prompt JSON
-    # ci-dessus ne convient de toute facon pas a une synthese en prose.
+    # Synthèse bâtie déterministiquement à partir des constats (déjà
+    # rédigés en langage clair par l'analyse ci-dessus) - pas de nouvel
+    # appel LLM ici : ça réduirait encore la latence et le prompt JSON
+    # ci-dessus ne convient de toute façon pas à une synthèse en prose.
     critical = [f for f in findings if f.severity == "CRITIQUE"]
     if critical:
         state.anomaly_narrative = (
-            f"{len(findings)} incoherence(s) detectee(s), dont {len(critical)} critique(s). "
+            f"{len(findings)} incohérence(s) détectée(s), dont {len(critical)} critique(s). "
             f"Les plus urgentes : {'; '.join(f.title_human for f in critical[:3])}."
         )
     elif findings:
         state.anomaly_narrative = (
-            f"{len(findings)} incoherence(s) detectee(s), aucune classee critique. "
+            f"{len(findings)} incohérence(s) détectée(s), aucune classée critique. "
             f"La plus notable : {findings[0].title_human}"
         )
     else:
-        state.anomaly_narrative = "Aucune anomalie identifiee sur les donnees fournies."
+        state.anomaly_narrative = "Aucune anomalie identifiée sur les données fournies."
     return state
